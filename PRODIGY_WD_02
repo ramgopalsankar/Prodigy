@@ -1,3 +1,4 @@
+\\html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +19,8 @@
   <script src="script.js"></script>
 </body>
 </html>
+
+//CSS
 .stopwatch {
   text-align: center;
   margin-top: 50px;
@@ -33,6 +36,8 @@ button {
   padding: 10px 20px;
   font-size: 16px;
 }
+
+//javascript 
 let timer;
 let startTime;
 let running = false;
