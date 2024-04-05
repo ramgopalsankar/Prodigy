@@ -1,0 +1,127 @@
+//html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Tic Tac Toe</h1>
+    <div id="board" class="board">
+      <!-- The game board will be generated dynamically using JavaScript -->
+    </div>
+    <div id="message" class="message"></div>
+    <button id="restartBtn">Restart Game</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+//CSS
+.container {
+  text-align: center;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 5px;
+  margin: 20px auto;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background-color: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 1.5rem;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+//javascript 
+document.addEventListener('DOMContentLoaded', () => {
+  const board = document.getElementById('board');
+  const message = document.getElementById('message');
+  const restartBtn = document.getElementById('restartBtn');
+  let currentPlayer = 'X';
+  let gameState = ['', '', '', '', '', '', '', '', ''];
+  let gameActive = true;
+
+  // Function to handle cell click
+  const handleCellClick = (e) => {
+    const cell = e.target;
+    const cellIndex = parseInt(cell.getAttribute('data-cell-index'));
+
+    // Check if cell is already clicked or game is over
+    if (gameState[cellIndex] !== '' || !gameActive) return;
+
+    // Update cell and game state
+    gameState[cellIndex] = currentPlayer;
+    cell.textContent = currentPlayer;
+
+    // Check for winner
+    checkWinner();
+    // Switch player
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  };
+
+  // Function to check for winner
+  const checkWinner = () => {
+    const winningConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let condition of winningConditions) {
+      const [a, b, c] = condition;
+      if (gameState[a] !== '' && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+        gameActive = false;
+        message.textContent = `${currentPlayer} wins!`;
+        return;
+      }
+    }
+
+    // Check for draw
+    if (!gameState.includes('')) {
+      gameActive = false;
+      message.textContent = "It's a draw!";
+    }
+  };
+
+  // Function to restart game
+  const restartGame = () => {
+    currentPlayer = 'X';
+    gameState = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    message.textContent = '';
+    document.querySelectorAll('.cell').forEach(cell => cell.textContent = '');
+  };
+
+  // Add event listeners
+  board.addEventListener('click', handleCellClick);
+  restartBtn.addEventListener('click', restartGame);
+});
