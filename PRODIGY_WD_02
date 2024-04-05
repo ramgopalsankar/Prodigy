@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="stopwatch">
+    <div id="display">00:00:00</div>
+    <button id="startStop" onclick="startStop()">Start</button>
+    <button onclick="reset()">Reset</button>
+    <button onclick="lap()">Lap</button>
+    <div id="laps"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+.stopwatch {
+  text-align: center;
+  margin-top: 50px;
+}
+
+#display {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+let timer;
+let startTime;
+let running = false;
+let laps = [];
+
+function startStop() {
+  if (!running) {
+    running = true;
+    startTime = Date.now() - (laps.length > 0 ? laps[laps.length - 1] : 0);
+    timer = setInterval(updateDisplay, 10);
+    document.getElementById("startStop").innerHTML = "Stop";
+  } else {
+    running = false;
+    clearInterval(timer);
+    document.getElementById("startStop").innerHTML = "Start";
+  }
+}
+
+function reset() {
+  running = false;
+  clearInterval(timer);
+  document.getElementById("startStop").innerHTML = "Start";
+  document.getElementById("display").innerHTML = "00:00:00";
+  laps = [];
+  document.getElementById("laps").innerHTML = "";
+}
+
+function lap() {
+  if (running) {
+    let lapTime = Date.now() - startTime;
+    laps.push(lapTime);
+    let lapDisplay = document.createElement("div");
+    lapDisplay.innerHTML = laps.length + ". " + formatTime(lapTime);
+    document.getElementById("laps").appendChild(lapDisplay);
+  }
+}
+
+function updateDisplay() {
+  let elapsedTime = Date.now() - startTime;
+  document.getElementById("display").innerHTML = formatTime(elapsedTime);
+}
+
+function formatTime(ms) {
+  let date = new Date(ms);
+  let minutes = date.getMinutes().toString().padStart(2, "0");
+  let seconds = date.getSeconds().toString().padStart(2, "0");
+  let milliseconds = Math.floor(date.getMilliseconds() / 10).toString().padStart(2, "0");
+  return minutes + ":" + seconds + ":" + milliseconds;
+}
