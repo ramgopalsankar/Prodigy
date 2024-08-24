@@ -1,0 +1,50 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# Specify the URL of the e-commerce site (example URL)
+url = 'https://example-ecommerce.com/products'
+
+# Send a GET request to the website
+response = requests.get(url)
+
+# Parse the HTML content using BeautifulSoup
+soup = BeautifulSoup(response.content, 'html.parser')
+
+# Initialize lists to store extracted data
+product_names = []
+product_prices = []
+product_ratings = []
+
+# Find the relevant HTML elements containing product information
+# The specific tags and classes will vary depending on the website's structure
+
+# Example for extracting product information:
+products = soup.find_all('div', class_='product-item')  # Adjust the tag and class as per the website
+
+for product in products:
+    # Extract product name
+    name = product.find('h2', class_='product-name').text.strip()
+    product_names.append(name)
+    
+    # Extract product price
+    price = product.find('span', class_='product-price').text.strip()
+    product_prices.append(price)
+    
+    # Extract product rating (if available)
+    rating = product.find('div', class_='product-rating').text.strip() if product.find('div', class_='product-rating') else 'No rating'
+    product_ratings.append(rating)
+
+# Create a DataFrame to organize the data
+data = {
+    'Product Name': product_names,
+    'Price': product_prices,
+    'Rating': product_ratings
+}
+
+df = pd.DataFrame(data)
+
+# Save the data to a CSV file
+df.to_csv('product_data.csv', index=False)
+
+print("Data successfully saved to 'product_data.csv'")
